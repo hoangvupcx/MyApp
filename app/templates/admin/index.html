@@ -1,0 +1,30 @@
+{% extends 'admin/base.html' %}
+{% block title %}Admin | Saigoniz{% endblock %}
+{% block body %}
+
+{% if err_msg %}
+<div class="alert alert-danger">
+    {{ err_msg }}
+</div>
+{% endif %}
+
+
+{% if current_user.is_authenticated %}
+<h1 class="text-info text-center">WELCOME <span class="text-danger">{{ current_user.name }}</span> TO SAIGONIZ</h1>
+{% else %}
+<h1 class="text-info text-center">LOG IN BY ADMIN</h1>
+<form method="post" action="/login-admin">
+    <div class="mb-3 mt-3">
+        <label for="username" class="form-label">Username:</label>
+        <input type="text" class="form-control" required id="username" placeholder="Enter Username" name="username">
+    </div>
+    <div class="mb-3">
+        <label for="pwd" class="form-label">Password:</label>
+        <input type="password" class="form-control" required id="pwd" placeholder="Enter Password" name="password">
+    </div>
+    <button type="submit" class="btn btn-primary">Login</button>
+</form>
+{% endif %}
+
+
+{% endblock %}

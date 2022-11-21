@@ -1,0 +1,20 @@
+{% extends 'layout/base.html' %}
+
+
+{% block content %}
+  <h1 class="text-center text-success">PRODUCT'S DETAILS</h1>
+  <div class="row container">
+    <div class="col-md-4 col-sm-6">
+      <img src="{{ product.image }}" class="img-fluid" alt="{{ product.name }}" />
+    </div>
+    <div class="col-md-8 col-sm-6">
+      <h1>{{ product.name }}</h1>
+      <p>{{ product.description | safe}}</p>
+      <div style="align-item:center">
+      <h3 class="text-danger">{{ "{:,.1f}".format(product.price) }} VNĐ
+        <a href="#" class="btn btn-primary" style="margin-left: 1.5rem">Add to cart</a></h3>
+      </div>
+
+    </div>
+  </div>
+{% endblock %}
