@@ -1,0 +1,53 @@
+{% extends 'admin/base.html' %}
+
+{% block body %}
+<h1 class="text-center text-danger">Report Statistic</h1>
+
+<div class="row">
+    <div class="col-md-5 col-sm-12">
+        <table class="table">
+            <tr>
+                <th>Date</th>
+                <th>Quantity</th>
+            </tr>
+            {% for s in stats %}
+            <tr>
+                <td>{{ s[0] }}</td>
+                <td>{{ s[1] }}</td>
+            </tr>
+            {% endfor %}
+        </table>
+        <form action="">
+            <div class="form-group">
+                <label>Filter by Month</label>
+                <input type="number"
+                       name="month"
+                       placeholder="Enter the month..."
+                       class="form-control"/>
+            </div>
+            <div>
+                <input type="submit" value="Filter" class="btn btn-info"/>
+            </div>
+        </form>
+    </div>
+
+    <div class="col-md-7 col-sm-12">
+        <canvas id="CusStats"></canvas>
+    </div>
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+<script src="{{ url_for('static', filename='/my-stats.js') }}"></script>
+<script>
+    let labels = []
+    let data = []
+
+    {% for s in stats %}
+        labels.push('{{ s[0] }}')
+        data.push({{ s[1] }})
+    {% endfor %}
+    window.onload = function() {
+        CusChart(labels, data)
+    }
+</script>
+{% endblock %}

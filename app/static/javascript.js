@@ -24,4 +24,5 @@ $(document).ready(function(){
         s > o ? $(".menu-wrapper").removeClass("no-scroll"):$(".menu-wrapper").addClass("no-scroll"),o=$(document).scrollTop()
         })
     });
+
 });
