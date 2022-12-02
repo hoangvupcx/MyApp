@@ -1,10 +1,71 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-  <meta charset="UTF-8">
-  <title>$Title$</title>
-</head>
-<body>
-$END$
-</body>
-</html>
+{% extends 'layout/base.html' %}
+{% block title %}Booking | Saigoniz{% endblock %}
+{% block content %}
+
+
+{% if err_msg %}
+<div class="alert alert-danger">
+    {{ err_msg }}
+</div>
+{% endif %}
+
+<form method="post">
+    <div class="container">
+        <div class="row">
+            <div class="col-md-7 col-sm-12">
+                <h1 class="text-center" style="color: #28648a">BOOKING</h1>
+                <div class="form-floating mb-3 mt-3">
+                    <select class="form-select" id="sel1" name="sellist">
+                        <option>Mr.</option>
+                        <option>Ms.</option>
+                    </select>
+                    <label for="sel1" class="form-label">Title</label>
+                </div>
+
+                <div class="row">
+                    <div class="col-md-4 col-sm-12">
+                        <div class="form-floating mb-3 mt-3">
+                            <input type="text" class="form-control" required id="firstname" placeholder="Enter First name"
+                                   name="firstname">
+                            <label for="firstname">First name</label>
+                        </div>
+                    </div>
+                    <div class="col-md-8 col-sm-12">
+                        <div class="form-floating mb-3 mt-3">
+                            <input type="text" class="form-control" required id="lastname" placeholder="Enter Last name"
+                                   name="lastname">
+                            <label for="lastname">Last name</label>
+                        </div>
+                    </div>
+                </div>
+                 <div class="form-floating mb-3 mt-3">
+                            <input type="date" class="form-control" required>
+                            <label>Date of Birth</label>
+                        </div>
+                <div class="form-floating mt-3 mb-3">
+                    <input type="email" class="form-control" required id="email"
+                           placeholder="Enter Email"
+                           name="email">
+                    <label for="email">Email</label>
+                </div>
+                <div class="form-floating mt-3 mb-3">
+                   <textarea class="form-control" rows="5" id="comment"></textarea>
+                    <label for="comment">Comments</label>
+                </div>
+
+                <div class="form-floating mt-3 mb-3">
+                    <input type="submit" class="btn btn-interface" value="Book an Appointment" style="width:100%">
+
+                </div>
+
+            </div>
+            <div class="col-md-5 col-sm-12 text-center d-flex" style="align-items: center; justify-content:end">
+                <img src="{{ url_for('static', filename='images/logo-12.png') }}" alt="logo-Saigoniz"
+                     data-aos="fade-left" data-aos-duration="1500" style="width:80%">
+            </div>
+        </div>
+
+    </div>
+</form>
+
+{% endblock %}

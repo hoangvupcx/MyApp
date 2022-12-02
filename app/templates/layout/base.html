@@ -5,6 +5,13 @@
     <title>
         {% block title %}{% endblock %}
     </title>
+
+    <script src="https://code.jquery.com/jquery-3.3.1.slim.min.js" integrity="sha384-q8i/X+965DzO0rT7abK41JStQIAqVgRVzpbzo5smXKp4YfRvH+8abtTE1Pi6jizo" crossorigin="anonymous"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.1.1/css/all.min.css">
+    <link href="https://unpkg.com/aos@2.3.1/dist/aos.css" rel="stylesheet">
+    <script src="https://unpkg.com/aos@2.3.1/dist/aos.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery-easing/1.4.1/jquery.easing.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
     <link rel="shortcut icon" href="https://www.facebook.com/messenger_media/?attachment_id=825459275450055&message_id=mid.%24cAAAAA0iqbgiKpxHOC2Edcx7npzZ9&thread_id=100005386515155">
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-EVSTQN3/azprG1Anm3QDgpJLIm9Nao0Yz1ztcQTwFspd3yD65VohhpuuCOmLASjC" crossorigin="anonymous">
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/js/bootstrap.bundle.min.js" integrity="sha384-MrcW6ZMFYlzcLA8Nl+NtUVF0sA7MsXsP1UyJoMp4YLEuNSfAP+JcXn/tWtIaxVXM" crossorigin="anonymous"></script>
@@ -17,31 +24,87 @@
     <link rel="stylesheet" href="https://pro.fontawesome.com/releases/v5.10.0/css/all.css" integrity="sha384-AYmEC3Yw5cVb3ZcuHtOA93w35dYTsvhLPVnYs9eStHfGJvOvKxVfELGroGkvsg+p" crossorigin="anonymous"/>
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@ciar4n/izmir@1.0.1/izmir.min.css">
     <script src='//ajax.googleapis.com/ajax/libs/jquery/1.7.1/jquery.min.js'></script>
+    <link rel="stylesheet" href="https://www.w3schools.com/w3css/4/w3.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.2.1/css/all.min.css" integrity="sha512-MV7K8+y+gLIBoVD59lQIYicR65iaqukzvf/nwasF0nqhPay5w/9lJmVM2hMDcnK1OnMGCdVK+iQrJ7lzPJQd1w==" crossorigin="anonymous" referrerpolicy="no-referrer" />
+
+
 
     <link rel="shortcut icon" href="{{ url_for('static', filename='images/logo-9.png') }}">
-    <script src="static.javascript.js"></script>
+    <link href="{{ url_for('static', filename='/style.css') }}" rel="stylesheet"/>
+    <script src="{{ url_for('static', filename='/cart.js') }}"></script>
     {% block css %}
-    <link href="{{ url_for('static', filename='style.css') }}" rel="stylesheet"/>
+
     {% endblock %}
 
     {% block js %}
-        <include src="./static/javascript.js"></include>
+
     {% endblock %}
 </head>
 <body>
 {% block header %}
 {% include 'layout/header.html' %}
 {% endblock %}
-
+<div class="container">
 {% block content required %}{% endblock %}
+
+</div>
 
 
 {% block footer %}
 {% include 'layout/footer.html' %}
 {% endblock %}
 
-<a id="back-to-top" href="#" class="btn btn-lg back-to-top" role="button">
+<a id="back-to-top" href="" class="btn btn-lg back-to-top" role="button">
     <i class="fas fa-chevron-up"></i>
 </a>
+
+
+
+<script type='text/javascript'>
+        $(function() {
+            var o=$(document).scrollTop();
+            var n=$(".menu-wrapper").outerHeight();
+            $(window).scroll(function() {
+                var s = $(document).scrollTop();
+                $(document).scrollTop() >= 0 ? $(".menu-wrapper").css("position","fixed") : $(".menu-wrapper").css("position","fixed"),
+                s > n ? $(".menu-wrapper").addClass("scroll"):$(".menu-wrapper").removeClass("scroll"),
+                s > o ? $(".menu-wrapper").removeClass("no-scroll"):$(".menu-wrapper").addClass("no-scroll"),o=$(document).scrollTop()
+            })
+        });
+</script>
+
+<script>
+    $(document).ready(function(){
+	$(window).scroll(function () {
+			if ($(this).scrollTop() > 400) {
+				$('#back-to-top').fadeIn();
+			} else {
+				$('#back-to-top').fadeOut();
+			}
+		});
+		$('#back-to-top').click(function () {
+			$('body,html').animate({
+				scrollTop: 0
+			}, 350);
+			return false;
+		});
+		});
+</script>
+
+<script>
+        window.addEventListener("scroll", function() {
+            const TOP = document.querySelector(".top")
+            const x = this.pageYOffset;
+            if (x > 200) {
+                TOP.classList.add("active")
+            }
+            else {
+                TOP.classList.remove("active")
+            }
+    })
+</script>
+<script>
+        AOS.init();
+    </script>
 </body>
 </html>

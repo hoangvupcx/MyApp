@@ -1,98 +1,35 @@
-from flask import render_template, request, redirect # redirect: Chuyển sang trang mới hoàn toàn nếu đăng nhập thành công
-from app import app, login
-from flask_login import login_user, logout_user
-import dao
-import os
+from flask import session
+from app import app, login, utils, controllers
 from app.admin import *
-import cloudinary.uploader
 
 
-@app.route('/')
-def index():
-    cate_id = request.args.get('category_id')
-    kw = request.args.get('keyword')
-    # from_price = request.args.get('from_price')
-    # to_price = request.args.get('to_price')
-    products = dao.load_products(category_id=cate_id, kw=kw)
-    return render_template('index.html',
-                           products=products)
+app.add_url_rule('/', 'index', controllers.index)
+app.add_url_rule('/products/<int:product_id>', 'product-detail', controllers.product_detail)
+app.add_url_rule('/login', 'login-user', controllers.login_my_user, methods=['get', 'post'])
+app.add_url_rule('/logout', 'logout', controllers.logout_my_user)
+app.add_url_rule('/login-admin', 'login-admin', controllers.admin_login, methods=['post'])
+app.add_url_rule('/register', 'register', controllers.register, methods=['get', 'post'])
+app.add_url_rule('/cart', 'cart', controllers.cart)
+app.add_url_rule('/cart', 'add-cart', controllers.add_to_cart, methods=['post'])
+app.add_url_rule('/cart/<product_id>', 'update-cart', controllers.update_cart, methods=['put'])
+app.add_url_rule('/cart/<product_id>', 'delete-cart', controllers.delete_cart, methods=['delete'])
+app.add_url_rule('/delete', 'delete-all', controllers.delete_all)
+app.add_url_rule('/pay', 'pay', controllers.pay, methods=['post'])
+app.add_url_rule('/book', 'book', controllers.booking_page)
+
+
 
 @app.context_processor #Lấy dữ liệu từ SQL
 def common_data():
     categories = dao.load_categories()
     return {
-        'categories': categories
+        'categories': categories,
+        'cart': utils.cart_stats(session.get(app.config['CART_KEY']))
     }
-
-@app.route('/products/<int:product_id>')
-def product_detail(product_id) :
-    p = dao.get_product_by_id(product_id)
-    return render_template('details.html', product=p)
-
-
-@app.route('/login', methods=['post', 'get'])
-def login_my_user():
-    if request.method == 'POST':
-        username = request.form.get('username')
-        password = request.form.get('password')
-
-        user = dao.check_login(username=username, password=password)
-        if user:
-            login_user(user=user)
-            return redirect('/')
-
-    return render_template('login.html')
-
-
-
-
-@app.route('/logout')
-def logout_my_user():
-    logout_user()
-    return render_template('/login.html')
-
-@app.route('/login-admin', methods=['post'])
-def admin_login():
-    username = request.form.get('username')
-    password = request.form.get('password')
-
-    user = dao.check_login(username = username, password = password)
-    if user:
-        login_user(user=user)
-
-    return redirect('/admin')
 
 @login.user_loader
 def load_user(user_id):
     return dao.get_user_by_id(user_id=user_id)
-
-@app.route('/register', methods=['get', 'post'])
-def register():
-    err_msg = ''
-    if request.method == 'POST':
-        password = request.form['password']
-        confirm = request.form['confirm']
-
-        if password.__eq__(confirm): # Kiểm tra xác nhận mật khẩu
-            # upload avatar lên cloudinary
-            avatar = ''
-            if request.files:
-                res = cloudinary.uploader.upload(request.files['avatar'])
-                avatar = res['secure_url']
-
-            # save user
-            try:
-                dao.register(name=request.form['name'],
-                             username=request.form['username'],
-                             password=request.form['password'],
-                             avatar=avatar)
-                return redirect('/login')
-            except:
-                err_msg = "UPDATING, COMING SOON!"
-        else:
-            err_msg = "INCORRECT CONFIRM PASSWORD!"
-    return render_template('register.html', err_msg=err_msg)
-
 
 
 if __name__ == '__main__':

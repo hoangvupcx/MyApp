@@ -1,4 +1,5 @@
 {% extends 'layout/base.html' %}
+{% block title %}Deatails | Saigoniz{% endblock %}
 
 
 {% block content %}
@@ -9,10 +10,17 @@
     </div>
     <div class="col-md-8 col-sm-6">
       <h1>{{ product.name }}</h1>
+        <div>
+          {% for t in product.tags %}
+          <span class="badge bg-info">{{ t.name }}</span>
+          {% endfor %}
+        </div>
       <p>{{ product.description | safe}}</p>
       <div style="align-item:center">
       <h3 class="text-danger">{{ "{:,.1f}".format(product.price) }} VNĐ
-        <a href="#" class="btn btn-primary" style="margin-left: 1.5rem">Add to cart</a></h3>
+        <a href="javascript:;" style="margin-left: 1.5rem" onclick="addToCart( {{ product.id }}, '{{ product.name }}', {{  product.price }}, '{{ product.image }}')" class="btn btn-primary">Add to cart</a>
+      </h3>
+
       </div>
 
     </div>

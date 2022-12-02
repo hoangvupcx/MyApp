@@ -1,10 +1,67 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-  <meta charset="UTF-8">
-  <title>$Title$</title>
-</head>
-<body>
-$END$
-</body>
-</html>
+{% extends 'layout/base.html' %}
+{% block title %}Purchase | Saigoniz{% endblock %}
+{% block content %}
+<h1 class="text-center" style="color: #28648a">YOUR CART</h1>
+
+<div class="container">
+    {% if 'cart' in session and session['cart'] %}
+    <table class="table table-hover">
+        <tr>
+            <th>ID</th>
+            <th>Name</th>
+
+            <th>Quantity</th>
+            <th></th>
+            <th>Price</th>
+        </tr>
+        {% for c in session['cart'].values() %}
+        <tr id="cart{{ c.id }}">
+            <td>{{ c.id }}</td>
+            <td>{{ c.name }}</td>
+
+            <td>
+                <input type="number" min="0" onblur="updateCart({{ c.id }}, this)" value="{{ c.quantity }}"
+                       class="form-control"/>
+            </td>
+            <td style="text-align:center">
+                <input style="width: 50%" type="button" onclick="deleteCart({{ c.id }})" value="Remove" class="btn btn-remove-cart"/>
+            </td>
+            <td>{{ "{:,.1f}".format(c.price) }} VND</td>
+        </tr>
+        {% endfor %}
+    </table>
+    <div class="alert alert-dark"  style="padding: 1.25rem">
+        <div class="d-flex justify-content-between">
+            <h3>Quantity: </h3>
+            <h3 class="cart-counter">{{ cart.total_quantity }}</h3>
+        </div>
+        <div class="d-flex justify-content-between">
+            <h3>Subtotal: </h3>
+            <h3 class="cart-amount">{{ "{:,.1f}".format(cart.total_amount) }} VND</h3>
+        </div>
+        <div>
+             <input style="width:100%; " type="button" onclick="deleteAll()" value="Remove" class="btn btn-danger"/>
+        </div>
+    </div>
+    <div>
+        {% if current_user.is_authenticated %}
+        <div class="complete-cart d-flex duration-400" onclick="pay()">
+            <input type="button" value="COMPLETE" class="btn btn-complete-cart"
+                   style="padding: 0.65rem; font-size: 1.25rem"/>
+            <i class="fa-solid fa-arrow-right-long text-white"></i>
+        </div>
+
+        {% else %}
+        <a href="/login?next=/cart">
+            <h4  style="margin-top: 5rem">
+                <input class="btn btn-login-cart" type="button" value="LOGIN TO PURCHASE" style="padding: 0.65rem">
+            </h4>
+
+        </a>
+        {% endif %}
+    </div>
+    {% else %}
+    <p>Nothing in cart!</p>
+    {% endif %}
+</div>
+{% endblock %}

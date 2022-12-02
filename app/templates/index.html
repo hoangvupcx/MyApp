@@ -2,17 +2,7 @@
 {% block title %}Home | Saigoniz{% endblock %}
 {% block content %}
 
-<section class="background-img">
-        <div class="background-img-content"  data-aos="fade-up" data-aos-duration="1500">
-            <div class="background-img-content-logo">
-                <img src="{{ url_for('static', filename='images/logo-2.png') }}" alt="logo-Saigoniz" data-aos="fade-right" data-aos-duration="1500">
-            </div>
-            <!-- <i>creative by nature</i> -->
-            <button class="background-img-content-btn btn">
-                <a href="https://www.facebook.com/saigoniz.vn">CONTACT US</a>
-            </button>
-        </div>
-    </section>
+
 
 
 
@@ -26,8 +16,8 @@
                 <div class="card-body">
                     <h5 class="card-title Questrial">{{ p.name }}</h5>
                     <p class="card-text Questrial">{{ "{:,.1f}".format(p.price) }} VND</p>
-                    <a href="/products/{{ p.id }}" class="btn btn-primary float-start Questrial">See more</a>
-                    <a href="#" class="btn btn-danger float-end Questrial">Add to cart</a>
+                    <a href="/products/{{ p.id }}" class="btn btn-primary float-start">See more</a>
+                    <a href="javascript:;" onclick="addToCart( {{ p.id }}, '{{ p.name }}', {{ p.price }}, '{{ p.image }}')" class="btn btn-danger float-end">Add to cart</a>
                 </div>
             </div>
         </div>

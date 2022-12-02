@@ -45,3 +45,27 @@ function revenueChart(labels, data) {
     }
   });
 }
+
+function CusChart(labels, data) {
+   const ctx = document.getElementById('CusStats');
+
+  new Chart(ctx, {
+    type: 'bar',
+    data: {
+      labels: labels,
+      datasets: [{
+        label: 'Patients in Month',
+        data: data,
+        borderWidth: 1,
+        backgroundColor: ['red', 'blue', 'yellow', 'orange', 'brown', 'purple']
+      }]
+    },
+    options: {
+      scales: {
+        y: {
+          beginAtZero: true
+        }
+      }
+    }
+  });
+}

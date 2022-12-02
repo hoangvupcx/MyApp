@@ -1,18 +1,25 @@
-from app import admin, db, app
-from app.models import Category, Product, User, UserRoleEnum
-from flask_admin.contrib.sqla import ModelView
-from flask_admin import BaseView, expose, Admin
+from datetime import datetime
 from flask_login import logout_user, current_user
-from flask import redirect
+from flask_admin.contrib.sqla import ModelView
+from flask import redirect, request
+from flask_admin import BaseView, expose, Admin, AdminIndexView
 from wtforms import TextAreaField
 from wtforms.widgets import TextArea
+from app import db, app, dao
+from app.models import Category, Product, User, UserRoleEnum, Tag, MedicalBill
+
 
 class AuthenticatedModelView(ModelView):
-    def is_accessible(self):  # Nếu đăng nhập quyền admin mới hiển thị View
+    def is_accessible(self):  # Nếu đăng nhập quyền ADMIN mới hiển thị View
         return current_user.is_authenticated and current_user.user_role == UserRoleEnum.ADMIN
 
+class AuthenticatedDOCTORModelView(ModelView):
+    def is_accessible(self):  # Nếu đăng nhập quyền DOCTOR mới hiển thị View
+        return current_user.is_authenticated and current_user.user_role == UserRoleEnum.DOCTOR
 
-
+class AuthencatedBaseView(BaseView):
+    def is_accessible(self): #Nếu đăng nhập mới hiển thị View
+        return current_user.is_authenticated
 
 class CKTextAreaWidget(TextArea):
     def __call__(self, field, **kwargs):
@@ -21,6 +28,7 @@ class CKTextAreaWidget(TextArea):
         else:
             kwargs.setdefault('class', 'ckeditor')
         return super(CKTextAreaWidget, self).__call__(field, **kwargs)
+
 
 class CKTextAreaField(TextAreaField):
     widget = CKTextAreaWidget()
@@ -61,17 +69,31 @@ class LogoutView(AuthencatedBaseView):
 class StatsView(AuthencatedBaseView):
     @expose('/')
     def index(self):
-        return self.render('admin/states.html')
+        kw = request.args.get('kw')
+        from_date = request.args.get('from_date')
+        to_date = request.args.get('to_date')
+        year = request.args.get('year', datetime.now().year)
+
+        return self.render('admin/states.html',
+                           month=dao.stats_by_month(year=year),
+                           stats=dao.stats_revenue(kw=kw,
+                                                     from_date=from_date,
+                                                     to_date=to_date))
+
+class MyAdminView(AdminIndexView):
+    @expose('/')
+    def index(self):
+        month = request.args.get('month', datetime.now().month)
+        stats = dao.count_user_by_day(month=month)
+        return self.render('admin/index.html', stats=stats)
 
 
-
-
-
-
-#admin = Admin(app=app, name="Quản trị bán hàng", templatemode='bootstrap4')
+admin = Admin(app=app, name='SAIGONIZ.COM', template_mode='bootstrap4', index_view=MyAdminView())
 admin.add_view(AuthenticatedModelView(Category, db.session, name='Categories'))
 admin.add_view(ProductModelView(Product, db.session,name='Products'))
 admin.add_view(AuthenticatedModelView(User, db.session,name='Users'))
+admin.add_view(AuthenticatedModelView(Tag, db.session, name='Tag'))
+admin.add_view(AuthenticatedDOCTORModelView(MedicalBill, db.session, name='Medical Bill'))
 admin.add_view(StatsView(name='Report'))
 admin.add_view(LogoutView(name='Log Out'))
 

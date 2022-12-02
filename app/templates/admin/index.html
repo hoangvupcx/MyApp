@@ -8,11 +8,67 @@
 </div>
 {% endif %}
 
-
 {% if current_user.is_authenticated %}
 <h1 class="text-info text-center">WELCOME <span class="text-danger">{{ current_user.name }}</span> TO SAIGONIZ</h1>
+<div class="row">
+    <div class="col-md-5 col-sm-12">
+        <table class="table">
+            <tr>
+                <th>Date</th>
+                <th>Quantity</th>
+            </tr>
+            {% for s in stats %}
+            <tr>
+                <td>{{ s[0] }}</td>
+                <td>{{ s[1] }}</td>
+            </tr>
+            {% endfor %}
+        </table>
+        <form action="">
+            <div class="form-group">
+                <label>Filter by Month</label>
+                <input type="number"
+                       name="month"
+                       placeholder="Enter the month..."
+                       class="form-control"/>
+            </div>
+            <div>
+                <input type="submit" value="Filter" class="btn btn-info"/>
+            </div>
+        </form>
+    </div>
+
+    <div class="col-md-7 col-sm-12">
+        <canvas id="CusStats"></canvas>
+    </div>
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+<script src="{{ url_for('static', filename='/my-stats.js') }}"></script>
+<script>
+    let labels = []
+    let data = []
+
+    {% for s in stats %}
+        labels.push('{{ s[0] }}')
+        data.push({{ s[1] }})
+    {% endfor %}
+    window.onload = function() {
+        CusChart(labels, data)
+    }
+</script>
+
 {% else %}
-<h1 class="text-info text-center">LOG IN BY ADMIN</h1>
+<div class="row">
+    <div class="col-md-6 col-sm-12 d-flex" style="justify-content: end; align-items:center">
+        <h1 style="color: #28648a">LOG IN BY ADMIN</h1>
+    </div>
+    <div class="col-md-6 col-sm-12">
+                <img src="{{ url_for('static', filename='images/logo-10.png') }}" alt="logo-Saigoniz"
+                     data-aos="fade-right" data-aos-duration="1500" style="width:50%">
+    </div>
+</div>
+
 <form method="post" action="/login-admin">
     <div class="mb-3 mt-3">
         <label for="username" class="form-label">Username:</label>
@@ -24,6 +80,7 @@
     </div>
     <button type="submit" class="btn btn-primary">Login</button>
 </form>
+
 {% endif %}
 
 

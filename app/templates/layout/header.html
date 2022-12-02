@@ -1,18 +1,17 @@
-<nav class="navbar navbar-expand-sm navbar-dark top">
+<nav class="navbar navbar-expand-sm navbar-dark top menu-wrapper">
     <div class="container-fluid">
-
         <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#collapsibleNavbar">
             <span class="navbar-toggler-icon"></span>
         </button>
-        <div class="collapse navbar-collapse" id="collapsibleNavbar">
-            <ul class="navbar-nav me-auto">
+        <div class="collapse navbar-collapse text-center" id="collapsibleNavbar">
+            <ul class="navbar-nav me-auto" data-aos="fade-right" data-aos-duration="1500">
                 <li class="nav-item logo">
-                    <a class="nav-link">
+                    <a href="/" class="nav-link">
                         <img src="{{ url_for('static', filename='images/logo-8.png') }}" alt="logo-Saigoniz"
                              data-aos="fade-right" data-aos-duration="1500">
                     </a>
                 </li>
-                <li class="nav-item">
+                 <li class="nav-item">
                     <a class="nav-link {% if 'category_id' not in request.args %}active{% endif %}" href="/">Home</a>
                 </li>
                 {% for cate in categories %}
@@ -22,25 +21,29 @@
                        href="{{ url_for('index', category_id=cate.id) }}">{{ cate.name }}</a>
                 </li>
                 {% endfor %}
+                <li class="nav-item">
+                    <a class="nav-link" href="/book">Booking</a>
+                </li>
+
             </ul>
 
 
             <ul class="navbar-nav">
                 {% if current_user.is_authenticated %}
-                <li class="nav-item">
-                    <a class="nav-link text-success" href="/">
+                <li class="nav-item" data-aos="fade-left" data-aos-duration="1500">
+                    <a class="nav-link" href="/">
                         <img width="40" class="rounded" src="{{ current_user.avatar }}" alt="current_user.name">
                         Hello {{ current_user.name }}
                     </a>
                 </li>
-                <li class="nav-item">
+                <li class="nav-item" data-aos="fade-left" data-aos-duration="1500">
                     <a class="nav-link" href="/logout">Log out</a>
                 </li>
                 {% else %}
-                <li class="nav-item">
+                <li class="nav-item" data-aos="fade-left" data-aos-duration="1500">
                     <a class="nav-link" href="/login">Log in</a>
                 </li>
-                <li class="nav-item">
+                <li class="nav-item" data-aos="fade-left" data-aos-duration="1500">
                     <a class="nav-link" href="/register">Register</a>
                 </li>
                 {% endif %}
@@ -48,7 +51,7 @@
 
                 <li class="nav-item">
                     <div class="offcanvas offcanvas-end text-bg-dark" id="demo"
-                         style="width: 65%; opacity: 0.85; background-color: black">
+                         style="width: 65%; opacity: 0.9; background-color: #5ba9d0">
                         <button type="button" class="btn-close btn-close-white float-end" style="margin: 20px"
                                 data-bs-dismiss="offcanvas"></button>
                         <form class="d-flex" style="padding: 0 81px" action="/">
@@ -57,30 +60,120 @@
                                    id="k">
                             <button class="button-search border-bottom-search" type="submit">Results</button>
                         </form>
-                        <button class="btn search-link button-clear-search search-padding-left" type="button"
+                        <button class="search-link button-clear-search search-padding-left" type="button"
                                 onclick="document.getElementById('k').value = ''">Clear
                         </button>
                         <div class="search-padding-left block">
                             <div class="suggestion-search">
-                                <p>SUGGESTIONS:</p>
+                                <h2 class="text-left">SUGGESTIONS:</h2>
                                 {% for cate in categories %}
                                 <ul style="padding: 0;">
                                     <li class="search-items">
-                                        <a class="nav-link search-item d-flex" style="padding-left : 0"
-                                           href="{{ url_for('index', category_id=cate.id) }}" >{{ cate.name }}</a>
+                                        <a class="nav-link search-item d-flex text-dark" style="padding-left : 0"
+                                           href="{{ url_for('index', category_id=cate.id) }}">{{ cate.name }}</a>
                                     </li>
                                 </ul>
                                 {% endfor %}
                             </div>
                         </div>
+                        <img src="{{ url_for('static', filename='images/logo-10.png') }}" alt="logo-Saigoniz"
+                             style="width:50%; margin: 0 auto; opacity: 0.4">
                     </div>
-                    <a class="search-link nav-link" type="button" data-bs-toggle="offcanvas" data-bs-target="#demo">Search</a>
+                    <a data-aos="fade-left" data-aos-duration="1500" class="search-link nav-link" type="button" data-bs-toggle="offcanvas" data-bs-target="#demo">Search</a>
+
                 </li>
+                <li class="nav-item">
+                    <div class="offcanvas offcanvas-end text-bg-dark offcanvas-lg" id="demo1"
+                         style="overflow: auto; width: 65%; opacity: 0.85; background-color: #5ba9d0" data-bs-spy="scroll">
+                        <button type="button" class="btn-close btn-close-white float-end" style="margin: 20px"
+                                data-bs-dismiss="offcanvas"></button>
+                        <div style="margin: 0 5rem">
+                            <h1 class="text-center">YOUR SHOPPING-BAG</h1>
+                            {% if 'cart' in session and session['cart'] %}
+                            <table class="table text-white">
+                                <tr>
+                                    <th>ID</th>
+                                    <th>Image</th>
+                                    <th>Name</th>
+                                    <th>Quantity</th>
+                                    <th></th>
+                                    <th>Price</th>
+                                </tr>
+                                {% for c in session['cart'].values() %}
+                                <tr id="cart{{ c.id }}" class="img-center">
+                                    <td>{{ c.id }}</td>
+                                    <td>
+                                        <a href="/products/{{ c.id }}">
+                                            <img class="img-thumbnail" src="{{ c.image }}" alt="{{ c.name }}">
+                                        </a>
+
+                                    </td>
+                                    <td>
+                                        <a href="/products/{{ c.id }}" style="text-decoration:none;" class="text-white nav-link"> {{ c.name }}</a>
+                                    </td>
+
+                                    <td>
+                                        <input type="number" min="0" onblur="updateCart({{ c.id }}, this)"
+                                               value="{{ c.quantity }}" class="form-control"/>
+                                    </td>
+                                    <td>
+                                        <button onclick="deleteCart({{ c.id }})"
+                                                class="btn-remove-bag">Remove</button>
+                                    </td>
+                                     <td>{{ "{:,.1f}".format(c.price) }} VND</td>
+                                </tr>
+                                {% endfor %}
+                            </table>
+                            <div class="alert">
+                                <div class="d-flex justify-content-between">
+                                    <h3>Subtotal: </h3>
+                                    <h3 class="cart-amount">{{ "{:,.1f}".format(cart.total_amount) }} VND</h3>
+                                </div>
+
+                            </div>
+                            <div class="d-flex justify-content-end" style="margin-bottom: 2rem">
+                                <a type="button" class="btn btn-checkout float-end"  href="/cart"><h3>CHECKOUT</h3></a>
+                            </div>
+
+                            {% else %}
+                            <p>Nothing in cart!</p>
+                            {% endif %}
+                        </div>
+                    </div>
+
+
+                </li>
+                <li class="nav-item">
+                     <a class="nav-link" data-bs-toggle="offcanvas" data-bs-target="#demo1">
+                        <i data-aos="fade-left" data-aos-duration="1500" class="fa-solid fa-bag-shopping text-white" style="cursor:pointer"></i>
+                        <span data-aos="fade-left" data-aos-duration="1500" class="badge bg-danger cart-counter">{{cart.total_quantity}}</span>
+                    </a>
+                </li>
+                <li class="nav-item">
+                     <a class="nav-link" href="/cart">
+                         <i data-aos="fade-left" data-aos-duration="1500" class="fa-solid fa-cart-shopping text-white" style="cursor:pointer"></i>
+                    </a>
+                </li>
+
             </ul>
         </div>
     </div>
     </div>
 </nav>
+<section class="background-img">
+    <div class="background-img-content">
+        <div class="background-img-content-logo">
+            <img src="{{ url_for('static', filename='images/logo-2.png') }}" alt="logo-Saigoniz" data-aos="fade-down"
+                 data-aos-duration="1500">
+        </div>
+        <!-- <i>creative by nature</i> -->
+        <button class="background-img-content-btn btn"  data-aos="fade-up" data-aos-duration="1500">
+            <a href="https://www.facebook.com/saigoniz.vn">CONTACT US</a>
+        </button>
+    </div>
+</section>
+
+
 
 
 
