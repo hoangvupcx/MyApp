@@ -132,5 +132,43 @@ class ReceiptDetails(BaseModel):
 if __name__ == '__main__':
     with app.app_context():
         db.create_all()
+        c1 = Category(name='Tablet')
+        c2 = Category(name='Bottles')
+        c3 = Category(name='Packs')
+
+        db.session.add_all([c1, c2, c3])
+        db.session.commit()
+
+        p1 = Product(name='iPhone 13 Pro Max', description='Apple, 256GB', price=35000000,
+                     image='https://res.cloudinary.com/dxxwcby8l/image/upload/v1646729569/fi9v6vdljyfmiltegh7k.jpg',
+                     category_id=1)
+        p2 = Product(name='iPad Pro 2022', description='Apple, 128GB', price=32000000,
+                     image='https://res.cloudinary.com/dxxwcby8l/image/upload/v1647248722/r8sjly3st7estapvj19u.jpg',
+                     category_id=2)
+        p3 = Product(name='Sạc dự phòng', description='Apple, 16GB', price=24000000,
+                     image='https://res.cloudinary.com/dxxwcby8l/image/upload/v1646729569/fi9v6vdljyfmiltegh7k.jpg',
+                     category_id=3)
+        p4 = Product(name='Galax Fold Z', description='Samsung, 256GB', price=33000000,
+                     image='https://res.cloudinary.com/dxxwcby8l/image/upload/v1646729569/fi9v6vdljyfmiltegh7k.jpg',
+                     category_id=1)
+        p5 = Product(name='Galaxy Note Ultra 2022', description='Samsung, 128GB', price=32000000,
+                     image='https://res.cloudinary.com/dxxwcby8l/image/upload/v1647248722/r8sjly3st7estapvj19u.jpg',
+                     category_id=1)
+        p6 = Product(name='Apple Watch S7', description='Apple, 16GB', price=24000000,
+                     image='https://res.cloudinary.com/dxxwcby8l/image/upload/v1646729569/fi9v6vdljyfmiltegh7k.jpg',
+                     category_id=3)
+
+        u1 = User(name='Admin', email='hoangvu.pcx@gmail.com',username='admin', password='202cb962ac59075b964b07152d234b70',
+                  avatar='https://res.cloudinary.com/dbk4i3dvv/image/upload/v1667880679/xjnia4ugrnavt4nsiwcj.jpg',
+                  user_role='ADMIN')
+
+        db.session.add(p1)
+        db.session.add(p2)
+        db.session.add(p3)
+        db.session.add(p4)
+        db.session.add(p5)
+        db.session.add(p6)
+
+        db.session.commit()
 
 
