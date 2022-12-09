@@ -112,19 +112,19 @@ def stats_by_month(year):
                      .order_by(extract('month', Receipt.created_date))\
                      .all()
 
-def load_comments_by_prod(product_id):
-    return Comment.query.filter(Comment.product_id.__eq__(product_id)).order_by(-Comment.id).all()
+# def load_comments_by_prod(product_id):
+#     return Comment.query.filter(Comment.product_id.__eq__(product_id)).order_by(-Comment.id).all()
 
 
-def add_comment(product_id, content):
-    c = Comment(content=content, product_id=product_id, user=current_user)
-    db.session.add(c)
-    db.session.commit()
-
-    return c
+# def add_comment(product_id, content):
+#     c = Comment(content=content, product_id=product_id, user=current_user)
+#     db.session.add(c)
+#     db.session.commit()
+#
+#     return c
 
 
 if __name__ == '__main__':
     from app import app
-    with app.app_context():
-        print(load_comments_by_prod(1))
+    # with app.app_context():
+        # print(load_comments_by_prod(1))
