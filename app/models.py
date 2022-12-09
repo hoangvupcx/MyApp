@@ -158,9 +158,7 @@ if __name__ == '__main__':
                      image='https://res.cloudinary.com/dxxwcby8l/image/upload/v1646729569/fi9v6vdljyfmiltegh7k.jpg',
                      category_id=3)
 
-        u1 = User(name='Admin', email='hoangvu.pcx@gmail.com',username='admin', password='202cb962ac59075b964b07152d234b70',
-                  avatar='https://res.cloudinary.com/dbk4i3dvv/image/upload/v1667880679/xjnia4ugrnavt4nsiwcj.jpg',
-                  user_role='ADMIN')
+
 
         db.session.add(p1)
         db.session.add(p2)
@@ -169,6 +167,16 @@ if __name__ == '__main__':
         db.session.add(p5)
         db.session.add(p6)
 
+        db.session.commit()
+
+        import hashlib
+
+        password = str(hashlib.md5('123456'.encode('utf-8')).hexdigest())
+        u = User(name='Admin', username='admin',
+                 password=password,
+                 user_role=UserRoleEnum.ADMIN,
+                 avatar='https://res.cloudinary.com/dxxwcby8l/image/upload/v1646729569/fi9v6vdljyfmiltegh7k.jpg')
+        db.session.add(u)
         db.session.commit()
 
 
