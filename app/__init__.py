@@ -9,7 +9,7 @@ import cloudinary
 app = Flask(__name__)
 
 app.secret_key = 'jnkjnadba98wq9@21431&9097' # Dùng để mã hóa khi thêm/sửa/xóa/cập nhât dữ liệu dưới quyền Admin
-app.config['SQLALCHEMY_DATABASE_URI'] = 'mysql+pymysql://root:%s@localhost/saigoniz?charset=utf8mb4' % quote('Admin@123')
+app.config['SQLALCHEMY_DATABASE_URI'] = 'mysql+pymysql://root:%s@localhost/saigonizclinic?charset=utf8mb4' % quote('Admin@123')
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = True
 app.config['CART_KEY'] = 'cart'
 

@@ -65,9 +65,7 @@ $(function() {
                 <td>
                     {{ "{:,.1f}".format(s[1]) }}VND
                 </td>
-                {% for a in month %}
-               <td>{{ a[1] }}</td>
-                {% endfor %}
+               <td>{{ "{:,.2f}".format(s[2]) }}%</td>
             </tr>
             {% endfor %}
         </table>

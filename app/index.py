@@ -1,6 +1,7 @@
 from flask import session
 from app import app, login, utils, controllers
 from app.admin import *
+from app import *
 
 
 app.add_url_rule('/', 'index', controllers.index)
@@ -16,7 +17,8 @@ app.add_url_rule('/cart/<product_id>', 'delete-cart', controllers.delete_cart, m
 app.add_url_rule('/delete', 'delete-all', controllers.delete_all)
 app.add_url_rule('/pay', 'pay', controllers.pay, methods=['post'])
 app.add_url_rule('/book', 'book', controllers.booking_page)
-
+# app.add_url_rule('/products/<product_id>/comments', 'comments', controllers.comments)
+# app.add_url_rule('/products/<product_id>/comments', 'comment-add', controllers.add_comment, methods=['post'])
 
 
 @app.context_processor #Lấy dữ liệu từ SQL

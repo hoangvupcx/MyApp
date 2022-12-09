@@ -1,4 +1,4 @@
-from app.models import Category, Product, User, Receipt, ReceiptDetails, Report
+from app.models import Category, Product, User, Receipt, ReceiptDetails, Report #, Comment
 from app import db, utils
 import hashlib
 from flask_login import current_user
@@ -43,12 +43,13 @@ def add_receipt(cart):
                                     product_id=int(c['id']))
             db.session.add(detail)
 
-        try:
-            db.session.commit()
-        except:
-            return False
-        else:
-            return True
+        db.session.commit()
+        # try:
+        #
+        # except:
+        #     return False
+        # else:
+        #     return True
 
 
 
@@ -101,16 +102,29 @@ def stats_revenue(kw=None, from_date=None, to_date=None):
      return query.group_by(Product.id).order_by(Product.name).all()
 
 def stats_by_month(year):
+    a = db.session.query(func.sum(ReceiptDetails.quantity * ReceiptDetails.price))
     return db.session.query(extract('month', Receipt.created_date),
                             func.sum(ReceiptDetails.quantity * ReceiptDetails.price),
-                            func.sum(ReceiptDetails.quantity * ReceiptDetails.price))\
+                            100 * (func.sum(ReceiptDetails.quantity * ReceiptDetails.price) / func.avg(a)))\
                      .join(ReceiptDetails, ReceiptDetails.receipt_id.__eq__(Receipt.id))\
                      .filter(extract('year', Receipt.created_date) == year)\
                      .group_by(extract('month', Receipt.created_date))\
                      .order_by(extract('month', Receipt.created_date))\
                      .all()
 
+def load_comments_by_prod(product_id):
+    return Comment.query.filter(Comment.product_id.__eq__(product_id)).order_by(-Comment.id).all()
+
+
+def add_comment(product_id, content):
+    c = Comment(content=content, product_id=product_id, user=current_user)
+    db.session.add(c)
+    db.session.commit()
+
+    return c
+
+
 if __name__ == '__main__':
     from app import app
     with app.app_context():
-        print(stats_revenue())
+        print(load_comments_by_prod(1))

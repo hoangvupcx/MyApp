@@ -26,6 +26,8 @@ class User(BaseModel, UserMixin):
     receipts = relationship('Receipt', backref='user', lazy=True)
     medicalBill = relationship('MedicalBill', backref='user', lazy=True)
     report = relationship('Report', backref='user', lazy=True)
+    #comments = relationship('Comment', backref='user', lazy=True)
+
 
 
     def __str__(self):
@@ -72,6 +74,8 @@ class Product(BaseModel):
     products = relationship('MedicalBill', secondary='prod_medibill',
                             lazy='subquery',
                             backref=backref('products', lazy=True))
+    #comments = relationship('Comment', backref='products', lazy=True)
+
     def __str__(self):
         return self.name
 
@@ -101,13 +105,13 @@ class MedicalBilLDetails():
 
 class Report(BaseModel):
     user_id = Column(Integer, ForeignKey(User.id), nullable=False)
-    # details = relationship('ReceiptDetails', backref='reprot', lazy=True)
-    # receipt = relationship('Receipt', backref='reprot', lazy=True)
+    details = relationship('ReceiptDetails', backref='reprot', lazy=True)
+    receipt = relationship('Receipt', backref='reprot', lazy=True)
 class Receipt(BaseModel):
     created_date = Column(DateTime, default=datetime.now())
     user_id = Column(Integer, ForeignKey(User.id), nullable=False)
     details = relationship('ReceiptDetails', backref='receipt', lazy=True)
-    # report_id = Column(Integer, ForeignKey(Report.id), nullable=False)
+    report_id = Column(Integer, ForeignKey(Report.id))
 
 
 
@@ -116,7 +120,13 @@ class ReceiptDetails(BaseModel):
     price = Column(Float, default=0)
     receipt_id = Column(Integer, ForeignKey(Receipt.id), nullable=False)
     product_id = Column(Integer, ForeignKey(Product.id), nullable=False)
-    # report_id = Column(Integer, ForeignKey(Report.id), nullable=False)
+    report_id = Column(Integer, ForeignKey(Report.id))
+
+# class Comment(BaseModel):
+#     content = Column(String(255), nullable=False)
+#     created_date = Column(DateTime, default=datetime.now())
+#     product_id = Column(Integer, ForeignKey(Product.id), nullable=False)
+#     user_id = Column(Integer, ForeignKey(User.id), nullable=False)
 
 
 if __name__ == '__main__':

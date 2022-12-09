@@ -1,5 +1,4 @@
-from flask import render_template, request, jsonify, session, \
-    redirect  # redirect: Chuyển sang trang mới hoàn toàn nếu đăng nhập thành công
+from flask import render_template, request, jsonify, session, redirect  # redirect: Chuyển sang trang mới hoàn toàn nếu đăng nhập thành công
 from app import app, login, utils, dao
 from flask_login import login_user, logout_user, login_required
 from app.decorators import annonymous_user
@@ -167,7 +166,40 @@ def booking_page():
     return render_template('booking.html')
 
 
+# def comments(product_id):
+#     data = [] # serializer
+#     for c in dao.load_comments_by_prod(product_id):
+#         data.append({
+#             "id": c.id,
+#             "content": c.content,
+#             "created_date": str(c.created_date),
+#             "user": {
+#                 "name": c.user.name,
+#                 "avatar": c.user.avatar
+#             }
+#         })
+#
+#     return jsonify(data)
 
+
+# def add_comment(product_id):
+#     try:
+#         c = dao.add_comment(product_id, request.json['content'])
+#     except:
+#         return jsonify({'status': 500})
+#     else:
+#         return jsonify({
+#             'status': 204,
+#             'comment': {
+#                 "id": c.id,
+#                 "content": c.content,
+#                 "created_date": str(c.created_date),
+#                     "user": {
+#                         "name": c.user.name,
+#                         "avatar": c.user.avatar
+#                     }
+#             }
+#         })
 
 
 if __name__ == '__main__':
