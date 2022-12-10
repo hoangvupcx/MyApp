@@ -2,8 +2,6 @@ from flask import render_template, request, jsonify, session, redirect  # redire
 from app import app, login, utils, dao
 from flask_login import login_user, logout_user, login_required
 from app.decorators import annonymous_user
-import dao
-import os
 from app.admin import *
 import cloudinary.uploader
 

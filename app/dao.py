@@ -1,10 +1,8 @@
 from app.models import Category, Product, User, Receipt, ReceiptDetails, Report #, Comment
-from app import db, utils
+from app import db
 import hashlib
 from flask_login import current_user
 from sqlalchemy import func
-from sqlalchemy.sql import extract
-from datetime import datetime
 
 def load_categories():
     return Category.query.all()
