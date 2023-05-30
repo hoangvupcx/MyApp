@@ -1,4 +1,4 @@
-from app.models import Category, Product, User, Receipt, ReceiptDetails, Report #, Comment
+from app.models import Category, Product, User, Receipt, ReceiptDetails #, Comment
 from app import db
 import hashlib
 from flask_login import current_user
@@ -9,6 +9,8 @@ def load_categories():
     return Category.query.all()
 
 
+
+# Push products from SQL
 def load_products(category_id=None, kw=None):
     query = Product.query.filter(Product.active.__eq__(True))
 
@@ -26,32 +28,31 @@ def load_products(category_id=None, kw=None):
 def get_product_by_id(product_id):
     return Product.query.get(product_id)
 
+
 def get_user_by_id(user_id):
     return User.query.get(user_id)
 
 
+
+# Proceed to uodate all products (consist who currently logged, quantity, price, id of product) - in models.py
 def add_receipt(cart):
     if cart:
         receipt = Receipt(user=current_user)
         db.session.add(receipt)
 
         for c in cart.values():
-            detail = ReceiptDetails(quantity=c['quantity'],
-                                    price=c['price'],
-                                    receipt=receipt,
-                                    product_id=int(c['id']))
+            detail = ReceiptDetails(quantity=c['quantity'], price=c['price'], receipt=receipt, product_id=int(c['id']))
             db.session.add(detail)
-
-        db.session.commit()
-        # try:
-        #
-        # except:
-        #     return False
-        # else:
-        #     return True
+        try:
+            db.session.commit()
+        except:
+            return False
+        else:
+            return True
 
 
 
+# Hash password and check password match to register password yet?
 def check_login(username, password):
     if username and password:
         password = str(hashlib.md5(password.strip().encode('utf-8')).hexdigest())
@@ -61,6 +62,7 @@ def check_login(username, password):
 
 
 
+# Create acoount and compare password to confirm (1 account consists: name, username, password and avatar)
 def register(name, username, password, avatar):
     password = str(hashlib.md5(password.strip().encode('utf-8')).hexdigest())
     u = User(name=name,username=username,password=password,avatar=avatar)
@@ -68,12 +70,16 @@ def register(name, username, password, avatar):
     db.session.commit()
 
 
+
+# Field in report: View categories and quantity with each category
 def count_product_by_cate():
     return db.session.query(Category.id, Category.name, func.count(Product.id))\
         .join(Product, Product.category_id.__eq__(Category.id), isouter=True)\
         .group_by(Category.id).order_by(Category.id).all()
 
 
+
+# Field in report: total users in one day (which day) by month
 def count_user_by_day(month):
     return db.session.query(extract('day',Receipt.created_date), func.count(User.id))\
                     .join(User, Receipt.user_id.__eq__(User.id)) \
@@ -83,12 +89,16 @@ def count_user_by_day(month):
                     .all()
 
 
+
+# Filed in report: Stats for products' id, products, categories, quantities,
+#                  times (total how many times this product was created),
+#                  total revenue. Can researched (filtered) by key-word, from and to date
 def stats_revenue(kw=None, from_date=None, to_date=None):
-     query = db.session.query(Product.id, Product.name,Product.category_id ,func.sum(ReceiptDetails.quantity),
+     query = db.session.query(Product.id, Product.name, Product.category_id ,func.sum(ReceiptDetails.quantity),
                               func.count(ReceiptDetails.quantity), func.sum(ReceiptDetails.quantity * ReceiptDetails.price))\
-                     .join(ReceiptDetails, ReceiptDetails.product_id.__eq__(Product.id))\
-                     .join(Receipt, ReceiptDetails.receipt_id.__eq__(Receipt.id)) \
-                     .group_by(Product.id, Product.name).order_by(Product.id)
+                       .join(ReceiptDetails, ReceiptDetails.product_id.__eq__(Product.id))\
+                       .join(Receipt, ReceiptDetails.receipt_id.__eq__(Receipt.id)) \
+                       .group_by(Product.id, Product.name).order_by(Product.id)
      if kw:
          query = query.filter(Product.name.contains(kw))
 
@@ -100,6 +110,10 @@ def stats_revenue(kw=None, from_date=None, to_date=None):
 
      return query.group_by(Product.id).order_by(Product.name).all()
 
+
+# Filed in report: View with total revenue in a month and
+#                  how many percent in subtotal.
+#                  Can filtered by Year (Show all months have receipts and revenue)
 def stats_by_month(year):
     a = db.session.query(func.sum(ReceiptDetails.quantity * ReceiptDetails.price))
     return db.session.query(extract('month', Receipt.created_date),

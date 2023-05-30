@@ -20,13 +20,15 @@ app.add_url_rule('/book', 'book', controllers.booking_page)
 # app.add_url_rule('/products/<product_id>/comments', 'comment-add', controllers.add_comment, methods=['post'])
 
 
-@app.context_processor #Lấy dữ liệu từ SQL
+# Get data from SQl
+@app.context_processor
 def common_data():
     categories = dao.load_categories()
     return {
         'categories': categories,
         'cart': utils.cart_stats(session.get(app.config['CART_KEY']))
     }
+
 
 @login.user_loader
 def load_user(user_id):

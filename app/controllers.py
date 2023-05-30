@@ -6,6 +6,8 @@ from app.admin import *
 import cloudinary.uploader
 
 
+
+# Filter products by category_id or key-word
 def index():
     cate_id = request.args.get('category_id')
     kw = request.args.get('keyword')
@@ -16,6 +18,7 @@ def index():
                            products=products)
 
 
+#
 def common_data():
     categories = dao.load_categories()
     return {
@@ -29,6 +32,8 @@ def product_detail(product_id):
     return render_template('details.html', product=p)
 
 
+
+
 @annonymous_user
 def login_my_user():
     if request.method == 'POST':
@@ -40,7 +45,7 @@ def login_my_user():
             login_user(user=user)
 
             u = request.args.get('next')
-            return redirect(u if u else '/')
+            return redirect(u if u else '/') # To continue the previous page after log-in (cart.html)
 
     return render_template('/login.html')
 
@@ -71,8 +76,8 @@ def register():
         password = request.form['password']
         confirm = request.form['confirm']
 
-        if password.__eq__(confirm):  # Kiểm tra xác nhận mật khẩu
-            # upload avatar lên cloudinary
+        if password.__eq__(confirm):  # compare password and confirm
+            # upload avatar to cloudinary
             avatar = ''
             if request.files:
                 res = cloudinary.uploader.upload(request.files['avatar'])
@@ -80,10 +85,8 @@ def register():
 
             # save user
             try:
-                dao.register(name=request.form['name'],
-                             username=request.form['username'],
-                             password=request.form['password'],
-                             avatar=avatar)
+                dao.register(name=request.form['name'], username=request.form['username'], password=request.form['password'], avatar=avatar)
+
                 return redirect('/login')
             except:
                 err_msg = "UPDATING, COMING SOON!"
@@ -96,6 +99,8 @@ def cart():
     return render_template('cart.html')
 
 
+
+# Take product_id, quantity, price, name, image(detail cart) and add to cart
 def add_to_cart():
     data = request.json
     id = str(data['id'])
@@ -121,6 +126,8 @@ def add_to_cart():
     return jsonify(utils.cart_stats(cart))
 
 
+
+# When customers want to change product's quantity
 def update_cart(product_id):
     key = app.config['CART_KEY']
     cart = session.get(key)
@@ -132,6 +139,7 @@ def update_cart(product_id):
     return jsonify(utils.cart_stats(cart))
 
 
+# To take product away from cart or when customers completely check-out
 def delete_cart(product_id):
     key = app.config['CART_KEY']
     cart = session.get(key)
@@ -142,6 +150,8 @@ def delete_cart(product_id):
     session[key] = cart
     return jsonify(utils.cart_stats(cart))
 
+
+# Log-in is an optional and when complete payment, all products in cart will be remove
 @login_required
 def pay():
     if 'cart' in session and session['cart']:
@@ -151,7 +161,7 @@ def pay():
         return jsonify({'message': 'Successful'})
     return jsonify({'message': 'Failed'})
 
-
+# To remove all the products in cart
 def delete_all():
     if 'cart' in session and session['cart']:
         del session['cart']
